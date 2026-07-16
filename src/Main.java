@@ -58,7 +58,10 @@ public class Main {
 		System.out.print("Preço do produto: ");
 		double preco = lerDouble();
 
-		Produto produto = new Produto(descricao, preco);
+		System.out.print("Quantidade em estoque: ");
+		int estoque = lerInt();
+
+		Produto produto = new Produto(descricao, preco, estoque);
 		dao.salvar(produto);
 
 		System.out.println("Produto cadastrado com o id: " + produto.getId());
@@ -110,8 +113,12 @@ public class Main {
 		System.out.print("Novo preço: ");
 		double preco = lerDouble();
 
+		System.out.print("Novo estoque: ");
+		int estoque = lerInt();
+
 		produto.setDescricao(descricao);
 		produto.setPreco(preco);
+		produto.setEstoque(estoque);
 
 		dao.alterar(produto);
 	}

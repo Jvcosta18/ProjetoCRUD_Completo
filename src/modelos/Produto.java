@@ -4,19 +4,22 @@ public class Produto {
 	private int id;
 	private String descricao;
 	private double preco;
+	private int estoque;
 
 	public Produto() {
 	}
 
-	public Produto(String descricao, double preco) {
+	public Produto(String descricao, double preco, int estoque) {
 		setDescricao(descricao);
 		setPreco(preco);
+		setEstoque(estoque);
 	}
 
-	public Produto(int id, String descricao, double preco) {
+	public Produto(int id, String descricao, double preco, int estoque) {
 		setId(id);
 		setDescricao(descricao);
 		setPreco(preco);
+		setEstoque(estoque);
 	}
 
 	public int getId() {
@@ -43,9 +46,17 @@ public class Produto {
 		this.preco = preco;
 	}
 
+	public int getEstoque() {
+		return estoque;
+	}
+
+	public void setEstoque(int estoque) {
+		this.estoque = estoque;
+	}
+
 	@Override
 	public String toString() {
-		return id + " - " + descricao + " - R$ " + preco;
+		return id + " - " + descricao + " - R$ " + preco + " - Estoque: " + estoque;
 	}
 
 }

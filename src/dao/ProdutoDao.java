@@ -16,13 +16,14 @@ public class ProdutoDao implements ICRUD {
 	@Override
 	public Produto salvar(Produto prod) {
 
-		String sql = "INSERT INTO produto (descricao, preco) VALUES (?, ?)";
+		String sql = "INSERT INTO produto (descricao, preco, estoque) VALUES (?, ?, ?)";
 
 		try (Connection con = ConectaDB.conectar();
 			 PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
 			stmt.setString(1, prod.getDescricao());
 			stmt.setDouble(2, prod.getPreco());
+			stmt.setInt(3, prod.getEstoque());
 
 			stmt.execute();
 
@@ -63,14 +64,15 @@ public class ProdutoDao implements ICRUD {
 	@Override
 	public void alterar(Produto prod) {
 
-		String sql = "UPDATE produto SET descricao = ?, preco = ? WHERE id = ?";
+		String sql = "UPDATE produto SET descricao = ?, preco = ?, estoque = ? WHERE id = ?";
 
 		try (Connection con = ConectaDB.conectar();
 			 PreparedStatement stmt = con.prepareStatement(sql)) {
 
 			stmt.setString(1, prod.getDescricao());
 			stmt.setDouble(2, prod.getPreco());
-			stmt.setInt(3, prod.getId());
+			stmt.setInt(3, prod.getEstoque());
+			stmt.setInt(4, prod.getId());
 
 			stmt.execute();
 
@@ -97,7 +99,8 @@ public class ProdutoDao implements ICRUD {
 					produto = new Produto(
 							rs.getInt("id"),
 							rs.getString("descricao"),
-							rs.getDouble("preco")
+							rs.getDouble("preco"),
+							rs.getInt("estoque")
 					);
 				}
 			}
@@ -123,7 +126,8 @@ public class ProdutoDao implements ICRUD {
 				Produto produto = new Produto(
 						rs.getInt("id"),
 						rs.getString("descricao"),
-						rs.getDouble("preco")
+						rs.getDouble("preco"),
+						rs.getInt("estoque")
 				);
 				produtos.add(produto);
 			}
