@@ -1,0 +1,13 @@
+# Ignore Java compiled class files
+*.class
+
+# IDE / build directories
+out/
+build/
+/.idea/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
