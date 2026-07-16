@@ -161,8 +161,11 @@ public class Main {
 			System.out.println("1 - Cadastrar cliente");
 			System.out.println("2 - Listar clientes");
 			System.out.println("3 - Consultar cliente por id");
-			System.out.println("4 - Atualizar cliente");
-			System.out.println("5 - Excluir cliente");
+			System.out.println("4 - Consultar cliente por CPF");
+			System.out.println("5 - Buscar clientes por nome");
+			System.out.println("6 - Ver total de clientes");
+			System.out.println("7 - Atualizar cliente");
+			System.out.println("8 - Excluir cliente");
 			System.out.println("0 - Voltar");
 			System.out.print("Escolha uma opção: ");
 			opcao = lerOpcao();
@@ -171,8 +174,11 @@ public class Main {
 				case 1 -> cadastrarCliente();
 				case 2 -> listarClientes();
 				case 3 -> consultarClientePorId();
-				case 4 -> atualizarCliente();
-				case 5 -> excluirCliente();
+				case 4 -> consultarClientePorCpf();
+				case 5 -> buscarClientesPorNome();
+				case 6 -> verTotalClientes();
+				case 7 -> atualizarCliente();
+				case 8 -> excluirCliente();
 				case 0 -> System.out.println("Voltando...");
 				default -> System.out.println("Opção inválida!");
 			}
@@ -239,6 +245,41 @@ public class Main {
 		} else {
 			System.out.println(cliente);
 		}
+	}
+
+	static void consultarClientePorCpf() {
+		System.out.print("Informe o CPF do cliente: ");
+		String cpf = sc.nextLine();
+
+		Cliente cliente = clienteDao.consultarPorCpf(cpf);
+
+		if (cliente == null) {
+			System.out.println("Cliente com CPF " + cpf + " não encontrado.");
+		} else {
+			System.out.println(cliente);
+		}
+	}
+
+	static void buscarClientesPorNome() {
+		System.out.print("Informe o nome (ou parte dele) para buscar: ");
+		String nome = sc.nextLine();
+
+		List<Cliente> clientes = clienteDao.consultarPorNome(nome);
+
+		if (clientes.isEmpty()) {
+			System.out.println("Nenhum cliente encontrado com nome contendo '" + nome + "'.");
+			return;
+		}
+
+		System.out.println("\n--- Clientes encontrados ---");
+		for (Cliente c : clientes) {
+			System.out.println(c);
+		}
+	}
+
+	static void verTotalClientes() {
+		int total = clienteDao.contar();
+		System.out.println("\nTotal de clientes cadastrados: " + total);
 	}
 
 	static void atualizarCliente() {

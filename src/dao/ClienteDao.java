@@ -156,4 +156,71 @@ public class ClienteDao implements ICRUD<Cliente> {
 		);
 	}
 
+	// Métodos adicionais para busca
+	public Cliente consultarPorCpf(String cpf) {
+
+		String sql = "SELECT * FROM cliente WHERE cpf = ?";
+		Cliente cliente = null;
+
+		try (Connection con = ConectaDB.conectar();
+			 PreparedStatement stmt = con.prepareStatement(sql)) {
+
+			stmt.setString(1, cpf);
+
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					cliente = montarCliente(rs);
+				}
+			}
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		return cliente;
+	}
+
+	public List<Cliente> consultarPorNome(String nome) {
+
+		String sql = "SELECT * FROM cliente WHERE nome LIKE ?";
+		List<Cliente> clientes = new ArrayList<>();
+
+		try (Connection con = ConectaDB.conectar();
+			 PreparedStatement stmt = con.prepareStatement(sql)) {
+
+			stmt.setString(1, "%" + nome + "%");
+
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					clientes.add(montarCliente(rs));
+				}
+			}
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		return clientes;
+	}
+
+	public int contar() {
+
+		String sql = "SELECT COUNT(*) as total FROM cliente";
+		int total = 0;
+
+		try (Connection con = ConectaDB.conectar();
+			 PreparedStatement stmt = con.prepareStatement(sql);
+			 ResultSet rs = stmt.executeQuery()) {
+
+			if (rs.next()) {
+				total = rs.getInt("total");
+			}
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		return total;
+	}
+
 }
