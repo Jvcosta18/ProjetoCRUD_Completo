@@ -14,6 +14,7 @@ public class Main {
 	static ProdutoDao produtoDao = new ProdutoDao();
 	static ClienteDao clienteDao = new ClienteDao();
 	static PedidoDao pedidoDao = new PedidoDao();
+    static CarrinhoController carrinhoCtrl = new CarrinhoController(sc, produtoDao, clienteDao, pedidoDao);
 
 	public static void main(String[] args) {
 
@@ -360,21 +361,29 @@ public class Main {
 
 		do {
 			System.out.println("\n===== MENU PEDIDOS =====");
-			System.out.println("1 - Cadastrar pedido");
-			System.out.println("2 - Listar pedidos");
-			System.out.println("3 - Consultar pedido por id");
-			System.out.println("4 - Atualizar pedido");
-			System.out.println("5 - Excluir pedido");
+			System.out.println("1 - Adicionar produto ao carrinho");
+			System.out.println("2 - Ver carrinho");
+			System.out.println("3 - Remover item do carrinho");
+			System.out.println("4 - Finalizar pedido (criar a partir do carrinho)");
+			System.out.println("5 - Cadastrar pedido (manual)");
+			System.out.println("6 - Listar pedidos");
+			System.out.println("7 - Consultar pedido por id");
+			System.out.println("8 - Atualizar pedido");
+			System.out.println("9 - Excluir pedido");
 			System.out.println("0 - Voltar");
 			System.out.print("Escolha uma opção: ");
 			opcao = lerOpcao();
 
 			switch (opcao) {
-				case 1 -> cadastrarPedido();
-				case 2 -> listarPedidos();
-				case 3 -> consultarPedidoPorId();
-				case 4 -> atualizarPedido();
-				case 5 -> excluirPedido();
+				case 1 -> carrinhoCtrl.adicionarAoCarrinhoInteractive();
+				case 2 -> carrinhoCtrl.verCarrinho();
+				case 3 -> carrinhoCtrl.removerDoCarrinhoInteractive();
+				case 4 -> carrinhoCtrl.finalizarPedidoCarrinhoInteractive();
+				case 5 -> cadastrarPedido();
+				case 6 -> listarPedidos();
+				case 7 -> consultarPedidoPorId();
+				case 8 -> atualizarPedido();
+				case 9 -> excluirPedido();
 				case 0 -> System.out.println("Voltando...");
 				default -> System.out.println("Opção inválida!");
 			}
@@ -509,6 +518,20 @@ public class Main {
 
 		pedidoDao.deletar(id);
 	}
+
+
+	static void adicionarAoCarrinho() {
+		carrinhoCtrl.adicionarAoCarrinhoInteractive();
+	}
+
+	static void verCarrinho() {
+		carrinhoCtrl.verCarrinho();
+	}
+
+	static void removerDoCarrinho() {
+		carrinhoCtrl.removerDoCarrinhoInteractive();
+	}
+
 
 
 
