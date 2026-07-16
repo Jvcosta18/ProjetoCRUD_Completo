@@ -1,7 +1,9 @@
 import dao.ClienteDao;
 import dao.ProdutoDao;
+import dao.PedidoDao;
 import modelos.Cliente;
 import modelos.Produto;
+import modelos.Pedido;
 
 import java.util.List;
 import java.util.Scanner;
@@ -11,6 +13,7 @@ public class Main {
 	static Scanner sc = new Scanner(System.in);
 	static ProdutoDao produtoDao = new ProdutoDao();
 	static ClienteDao clienteDao = new ClienteDao();
+	static PedidoDao pedidoDao = new PedidoDao();
 
 	public static void main(String[] args) {
 
@@ -20,6 +23,7 @@ public class Main {
 			System.out.println("\n===== MENU PRINCIPAL =====");
 			System.out.println("1 - Produtos");
 			System.out.println("2 - Clientes");
+			System.out.println("3 - Pedidos");
 			System.out.println("0 - Sair");
 			System.out.print("Escolha uma opção: ");
 			opcao = lerOpcao();
@@ -27,6 +31,7 @@ public class Main {
 			switch (opcao) {
 				case 1 -> menuProdutos();
 				case 2 -> menuClientes();
+				case 3 -> menuPedidos();
 				case 0 -> System.out.println("Saindo...");
 				default -> System.out.println("Opção inválida!");
 			}
@@ -347,6 +352,162 @@ public class Main {
 		}
 
 		clienteDao.deletar(id);
+	}
+
+
+	static void menuPedidos() {
+		int opcao;
+
+		do {
+			System.out.println("\n===== MENU PEDIDOS =====");
+			System.out.println("1 - Cadastrar pedido");
+			System.out.println("2 - Listar pedidos");
+			System.out.println("3 - Consultar pedido por id");
+			System.out.println("4 - Atualizar pedido");
+			System.out.println("5 - Excluir pedido");
+			System.out.println("0 - Voltar");
+			System.out.print("Escolha uma opção: ");
+			opcao = lerOpcao();
+
+			switch (opcao) {
+				case 1 -> cadastrarPedido();
+				case 2 -> listarPedidos();
+				case 3 -> consultarPedidoPorId();
+				case 4 -> atualizarPedido();
+				case 5 -> excluirPedido();
+				case 0 -> System.out.println("Voltando...");
+				default -> System.out.println("Opção inválida!");
+			}
+
+		} while (opcao != 0);
+	}
+
+	static void cadastrarPedido() {
+		System.out.print("Informe o id do cliente: ");
+		int clienteId = lerInt();
+
+		Cliente cliente = clienteDao.consultar(clienteId);
+		if (cliente == null) {
+			System.out.println("Cliente não encontrado.");
+			return;
+		}
+
+		System.out.print("Data do pedido (ex: 2026-07-16): ");
+		String data = sc.nextLine();
+
+		System.out.print("Status do pedido: ");
+		String status = sc.nextLine();
+
+		System.out.print("Ids dos produtos (separados por vírgula): ");
+		String entrada = sc.nextLine();
+		List<Produto> produtos = new java.util.ArrayList<>();
+		if (!entrada.trim().isEmpty()) {
+			String[] parts = entrada.split(",");
+			for (String p : parts) {
+				try {
+					int pid = Integer.parseInt(p.trim());
+					Produto prod = produtoDao.consultar(pid);
+					if (prod != null) produtos.add(prod);
+				} catch (NumberFormatException e) {
+					// ignora
+				}
+			}
+		}
+
+		Pedido pedido = new Pedido(cliente, data, status, produtos);
+		pedidoDao.salvar(pedido);
+
+		System.out.println("Pedido cadastrado com o id: " + pedido.getId());
+	}
+
+	static void listarPedidos() {
+		List<Pedido> pedidos = pedidoDao.consultar();
+
+		if (pedidos.isEmpty()) {
+			System.out.println("Nenhum pedido cadastrado.");
+			return;
+		}
+
+		System.out.println("\n--- Lista de pedidos ---");
+		for (Pedido p : pedidos) {
+			System.out.println(p);
+		}
+	}
+
+	static void consultarPedidoPorId() {
+		System.out.print("Informe o id do pedido: ");
+		int id = lerInt();
+
+		Pedido pedido = pedidoDao.consultar(id);
+
+		if (pedido == null) {
+			System.out.println("Pedido não encontrado.");
+		} else {
+			System.out.println(pedido);
+		}
+	}
+
+	static void atualizarPedido() {
+		System.out.print("Informe o id do pedido que deseja atualizar: ");
+		int id = lerInt();
+
+		Pedido pedido = pedidoDao.consultar(id);
+		if (pedido == null) {
+			System.out.println("Pedido não encontrado.");
+			return;
+		}
+
+		System.out.println("Pedido atual: " + pedido);
+
+		System.out.print("Novo id do cliente: ");
+		int clienteId = lerInt();
+		Cliente cliente = clienteDao.consultar(clienteId);
+		if (cliente == null) {
+			System.out.println("Cliente não encontrado.");
+			return;
+		}
+
+		System.out.print("Nova data (ex: 2026-07-16): ");
+		String data = sc.nextLine();
+
+		System.out.print("Novo status: ");
+		String status = sc.nextLine();
+
+		System.out.print("Ids dos produtos (separados por vírgula): ");
+		String entrada = sc.nextLine();
+		List<Produto> produtos = new java.util.ArrayList<>();
+		if (!entrada.trim().isEmpty()) {
+			String[] parts = entrada.split(",");
+			for (String p : parts) {
+				try {
+					int pid = Integer.parseInt(p.trim());
+					Produto prod = produtoDao.consultar(pid);
+					if (prod != null) produtos.add(prod);
+				} catch (NumberFormatException e) {
+					// ignora
+				}
+			}
+		}
+
+		pedido.setCliente(cliente);
+		pedido.setData(data);
+		pedido.setStatus(status);
+		pedido.setProdutos(produtos);
+
+		pedidoDao.alterar(pedido);
+	}
+
+	static void excluirPedido() {
+		System.out.print("Informe o id do pedido que deseja excluir: ");
+		int id = lerInt();
+
+		Pedido pedido = pedidoDao.consultar(id);
+		if (pedido == null) {
+			System.out.println("Pedido não encontrado.");
+			return;
+		}
+
+		pedidoDao.deletar(id);
 	}
 
 
