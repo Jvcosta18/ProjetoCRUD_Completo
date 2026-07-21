@@ -27,7 +27,7 @@ public class ProdutoDao implements ICRUD<Produto> {
 
 			stmt.execute();
 
-			// Recupera o ID gerado automaticamente pelo banco (AUTO_INCREMENT)
+
 			try (ResultSet rs = stmt.getGeneratedKeys()) {
 				if (rs.next()) {
 					prod.setId(rs.getInt(1));

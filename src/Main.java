@@ -418,7 +418,7 @@ public class Main {
 					Produto prod = produtoDao.consultar(pid);
 					if (prod != null) produtos.add(prod);
 				} catch (NumberFormatException e) {
-					// ignora
+
 				}
 			}
 		}

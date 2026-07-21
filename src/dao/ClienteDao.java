@@ -156,7 +156,7 @@ public class ClienteDao implements ICRUD<Cliente> {
 		);
 	}
 
-	// Métodos adicionais para busca
+
 	public Cliente consultarPorCpf(String cpf) {
 
 		String sql = "SELECT * FROM cliente WHERE cpf = ?";

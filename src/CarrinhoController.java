@@ -86,13 +86,13 @@ public class CarrinhoController {
             return;
         }
 
-        // Conta quantas unidades de cada produto estão no carrinho
+
         Map<Integer, Integer> quantidades = new HashMap<>();
         for (Produto p : carrinho) {
             quantidades.put(p.getId(), quantidades.getOrDefault(p.getId(), 0) + 1);
         }
 
-        // Revalida o estoque atual no banco antes de finalizar
+
         Map<Integer, Produto> produtosAtualizados = new HashMap<>();
         double total = 0;
         for (Map.Entry<Integer, Integer> e : quantidades.entrySet()) {
