@@ -1,12 +1,11 @@
+package dao;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import dao.ClienteDao;
-import dao.ProdutoDao;
-import dao.PedidoDao;
 import modelos.Cliente;
 import modelos.Produto;
 import modelos.Pedido;
