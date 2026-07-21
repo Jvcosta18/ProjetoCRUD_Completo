@@ -6,7 +6,7 @@ import java.util.List;
 public class Pedido {
     private int id;
     private Cliente cliente;
-    private String data; // formato simples: yyyy-MM-dd ou livre
+    private String data;
     private String status;
     private List<Produto> produtos = new ArrayList<>();
 
