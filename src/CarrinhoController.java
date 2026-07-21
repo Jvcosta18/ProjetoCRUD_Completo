@@ -86,6 +86,34 @@ public class CarrinhoController {
             return;
         }
 
+        // Conta quantas unidades de cada produto estão no carrinho
+        Map<Integer, Integer> quantidades = new HashMap<>();
+        for (Produto p : carrinho) {
+            quantidades.put(p.getId(), quantidades.getOrDefault(p.getId(), 0) + 1);
+        }
+
+        // Revalida o estoque atual no banco antes de finalizar
+        Map<Integer, Produto> produtosAtualizados = new HashMap<>();
+        double total = 0;
+        for (Map.Entry<Integer, Integer> e : quantidades.entrySet()) {
+            int produtoId = e.getKey();
+            int qtdDesejada = e.getValue();
+
+            Produto produtoAtual = produtoDao.consultar(produtoId);
+            if (produtoAtual == null) {
+                System.out.println("Produto id " + produtoId + " não existe mais. Remova-o do carrinho.");
+                return;
+            }
+            if (produtoAtual.getEstoque() < qtdDesejada) {
+                System.out.println("Estoque insuficiente para \"" + produtoAtual.getDescricao() + "\". "
+                        + "Disponível: " + produtoAtual.getEstoque() + ", no carrinho: " + qtdDesejada);
+                return;
+            }
+
+            produtosAtualizados.put(produtoId, produtoAtual);
+            total += produtoAtual.getPreco() * qtdDesejada;
+        }
+
         System.out.print("Informe o id do cliente para o pedido: ");
         int clienteId = lerInt();
         Cliente cliente = clienteDao.consultar(clienteId);
@@ -105,7 +133,15 @@ public class CarrinhoController {
         Pedido pedido = new Pedido(cliente, data, status, itens);
         pedidoDao.salvar(pedido);
 
+
+        for (Map.Entry<Integer, Integer> e : quantidades.entrySet()) {
+            Produto produto = produtosAtualizados.get(e.getKey());
+            produto.setEstoque(produto.getEstoque() - e.getValue());
+            produtoDao.alterar(produto);
+        }
+
         System.out.println("Pedido finalizado com id: " + pedido.getId());
+        System.out.println("Valor total do pedido: R$ " + String.format("%.2f", total));
         carrinho.clear();
     }
 
@@ -120,4 +156,3 @@ public class CarrinhoController {
     }
 
 }
-
